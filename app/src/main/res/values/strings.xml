@@ -22,5 +22,6 @@
     <string name="btn_HistorialNuevo">Nuevo</string>
     <string name="btn_HistorialMenu">Menu</string>
     <string name="btn_fila_Cancelar">Cancelar</string>
+    <string name="btn_fila_VerDetalle">Ver Detalle</string>
 
 </resources>

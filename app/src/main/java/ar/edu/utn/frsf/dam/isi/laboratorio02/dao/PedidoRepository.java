@@ -18,16 +18,12 @@ public class PedidoRepository {
         if(p.getId()!=null && p.getId()>0) {
             LISTA_PEDIDOS.remove(p);
         }else{
-            p.setId(generateId());
+            GENERADOR_ID_PEDIDO ++;
+            p.setId(GENERADOR_ID_PEDIDO);
         }
         LISTA_PEDIDOS.add(p);
     }
 
-    public int generateId() {
-        int temp =GENERADOR_ID_PEDIDO;
-
-        return (temp ++);
-    }
 
     public Pedido buscarPorId(Integer id){
         for(Pedido p: LISTA_PEDIDOS){

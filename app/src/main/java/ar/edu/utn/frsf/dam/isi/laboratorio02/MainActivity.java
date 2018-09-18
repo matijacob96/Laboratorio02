@@ -42,14 +42,10 @@ public class MainActivity extends AppCompatActivity {
         btnListaProductos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent();
-                startActivity(i);
-            }
-        });
-        btnListaProductos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(),verlistaproducto.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("NUEVO_PEDIDO", 0);
+                Intent i = new Intent(getApplicationContext(), verlistaproducto.class);
+                i.putExtras(bundle);
                 startActivity(i);
             }
         });

@@ -1,7 +1,10 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +17,8 @@ import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 public class PedidoAdapter extends ArrayAdapter<Pedido> {
     private Context ctx;
     private List<Pedido> datos;
+    private Pedido pedidoaux;
+
     public PedidoAdapter(Context context, List<Pedido> objects) {
         super(context, 0, objects);
         this.ctx = context;
@@ -21,7 +26,7 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-
+        Log.d("Database", "position "+position);
         LayoutInflater inflater = LayoutInflater.from(this.getContext());
         View filas = convertView;
         if(filas== null) {
@@ -50,7 +55,8 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
                 }
         );
 
-        Pedido pedidoaux = (Pedido) super.getItem(position);
+        pedidoaux = (Pedido) super.getItem(position);
+        Log.d("Database", "pedidoaux "+pedidoaux.getId());
 
         holder.tvMailPedido.setText("Contacto: "+ pedidoaux.getMailContacto());
         if(pedidoaux.getRetirar()){
@@ -87,7 +93,24 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
         holder.estado.setText("Estado: "+pedidoaux.getEstado());
         holder.btnCancelar.setTag(position);
 
+
+        holder.btnVerDetalle.setTag(position);
+        holder.btnVerDetalle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("idPedidoSeleccionado", pedidoaux.getId());
+                bundle.putInt("HAY_PEDIDO", 1);
+                Log.d("Database", "idPedidoSeleccionado salida "+pedidoaux.getId().toString());
+                Intent i = new Intent(ctx, Dardealta.class);
+                i.putExtras(bundle);
+                ctx.startActivity(i);
+            }
+        });
+
+
         return filas;
+
     }
 
     }

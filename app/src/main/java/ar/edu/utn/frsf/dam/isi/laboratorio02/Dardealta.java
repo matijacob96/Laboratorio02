@@ -5,17 +5,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -39,11 +38,13 @@ public class Dardealta extends AppCompatActivity {
     PedidoDetalle detalleaux;
     TextView lblTotalPedido;
     Double varaux = 0.0;
-    Integer newId;
+    //Integer newId;
     Button btnHacerpedido;
     EditText edtCorreo;
     EditText edtPedidoHoraEntrega;
-
+    Button btnVolver;
+    Button btnQuitarProducto;
+    PedidoDetalle itemSeleccionado;
 
     private final int REQUEST_NUEVOITEM = 0;
 
@@ -53,7 +54,6 @@ public class Dardealta extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dardealta);
 
-        unPedido = new Pedido();
         repositorioPedido = new PedidoRepository();
         repositorioProducto = new ProductoRepository();
         optPedidoModoEntrega = findViewById(R.id.optPedidoModoDeEntrega);
@@ -63,12 +63,70 @@ public class Dardealta extends AppCompatActivity {
         lblTotalPedido = findViewById(R.id.lblTotalPedido);
         btnHacerpedido = findViewById(R.id.btnHacerPedido);
         edtCorreo = findViewById(R.id.edtPedidoCorreo);
-        edtPedidoDireccion = findViewById(R.id.edtPedidoDireccion);
         edtPedidoHoraEntrega = findViewById(R.id.edtPedidoHoraEntrega);
+        btnVolver = findViewById(R.id.btnDAVolver);
+        btnQuitarProducto = findViewById(R.id.btnQuitarProducto);
+
+
+
+        Intent i1= getIntent();
+        Integer idPedido = 0;
+        if(i1.getExtras()!=null){
+            idPedido = i1.getExtras().getInt("idPedidoSeleccionado");
+            Log.d("Database", "idPedidoSeleccionado llegada "+idPedido.toString());
+
+            if (i1.getExtras().getInt("HAY_PEDIDO") == 1) {
+                edtCorreo.setEnabled(false);
+                edtPedidoDireccion.setEnabled(false);
+                edtPedidoHoraEntrega.setEnabled(false);
+                btnQuitarProducto.setEnabled(false);
+                btnHacerpedido.setEnabled(false);
+                btnAddProducto.setEnabled(false);
+                lstPedidoItems.setEnabled(false);
+                lstPedidoItems.setClickable(false);
+                optPedidoModoEntrega.setEnabled(false);
+                findViewById(R.id.optPedidoRetira).setClickable(false);
+                findViewById(R.id.optPedidoRetira).setEnabled(false);
+                findViewById(R.id.optPedidoEnviar).setClickable(false);
+                findViewById(R.id.optPedidoEnviar).setEnabled(false);
+
+                for (int i=0; i<lstPedidoItems.getChildCount(); i++) {
+                    lstPedidoItems.getChildAt(i).setEnabled(false);
+                }
+
+
+            }
+        }
+        if(idPedido>0){
+            unPedido = repositorioPedido.buscarPorId(idPedido);
+            edtCorreo.setText(unPedido.getMailContacto());
+            edtPedidoDireccion.setText(unPedido.getDireccionEnvio());
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            edtPedidoHoraEntrega.setText(sdf.format(unPedido.getFecha()));
+            if (unPedido.getRetirar()){
+                optPedidoModoEntrega.check(R.id.optPedidoRetira);
+            } else {
+                optPedidoModoEntrega.check(R.id.optPedidoEnviar);
+            }
+
+
+            if (i1.getExtras().getInt("HAY_PEDIDO") == 1) {
+                String str;
+
+                for(PedidoDetalle d : unPedido.getDetalle()){
+                    varaux += d.getCantidad()*d.getProducto().getPrecio();
+                }
+                str = getResources().getString(R.string.pedido_lbl_totalpedido, varaux.toString());
+                lblTotalPedido.setText(str);
+            }
+
+        }else {
+            unPedido = new Pedido();
+        }
+
 
         edtPedidoDireccion.setEnabled(false);
-        newId = repositorioPedido.generateId();
-        unPedido.setId(newId);
+
 
 
         optPedidoModoEntrega.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -95,6 +153,33 @@ public class Dardealta extends AppCompatActivity {
                 startActivityForResult(i, REQUEST_NUEVOITEM);
             }
         });
+
+        btnVolver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
+
+
+        lstPedidoItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                itemSeleccionado = (PedidoDetalle) parent.getItemAtPosition(position);
+                lstPedidoItems.setItemChecked(position, true);
+            }
+        });
+
+        btnQuitarProducto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                unPedido.quitarDetalle(itemSeleccionado);
+                adaptadorlist.notifyDataSetChanged();
+            }
+        });
+
 
         btnHacerpedido.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,6 +219,8 @@ public class Dardealta extends AppCompatActivity {
                     hora.set(Calendar.SECOND,Integer.valueOf(0));
                     unPedido.setFecha(hora.getTime());
                     repositorioPedido.guardarPedido(unPedido);
+
+                    setResult(RESULT_OK);
                     finish();
                 }
             }

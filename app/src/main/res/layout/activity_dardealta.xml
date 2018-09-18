@@ -83,7 +83,8 @@
     <ListView
         android:id="@+id/lstPedidoItems"
         android:layout_width="match_parent"
-        android:layout_height="160dp" />
+        android:layout_height="160dp"
+        android:choiceMode="singleChoice"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -98,7 +99,7 @@
             android:text="@string/pedido_btn_addproducto" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/btnQuitarProducto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -124,7 +125,7 @@
             android:text="@string/pedido_btn_hacerpedido" />
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/btnDAVolver"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
