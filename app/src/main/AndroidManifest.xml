@@ -16,7 +16,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".verlistaproducto"></activity>
+        <activity android:name=".verlistaproducto" />
+        <activity android:name=".Dardealta" />
+        <activity android:name=".HistorialDePedidos"></activity>
     </application>
 
 </manifest>

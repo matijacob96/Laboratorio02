@@ -12,6 +12,8 @@ public class MainActivity extends AppCompatActivity {
     private Button btnHistorial;
     private Button btnListaProductos;
 
+    private final int REQUEST_NUEVOPEDIDO = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,8 +22,10 @@ public class MainActivity extends AppCompatActivity {
         btnNuevoPedido.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent();
+                Intent i = new Intent(getApplicationContext(),Dardealta.class);
                 startActivity(i);
+                /*Intent i = new Intent();
+                startActivityForResult(i, REQUEST_NUEVOPEDIDO);*/
             }
         });
 
@@ -29,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         btnHistorial.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent();
+                Intent i = new Intent(getApplicationContext(), HistorialDePedidos.class);
                 startActivity(i);
             }
         });
@@ -39,6 +43,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent();
+                startActivity(i);
+            }
+        });
+        btnListaProductos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(),verlistaproducto.class);
                 startActivity(i);
             }
         });

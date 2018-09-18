@@ -8,6 +8,11 @@ public class PedidoDetalle {
     private Producto producto;
     private Pedido pedido;
 
+    public PedidoDetalle() {
+        id=ID_DETALLE++;
+        this.cantidad = 0;
+        this.producto = null;
+    }
     public PedidoDetalle(Integer cantidad, Producto producto) {
         id=ID_DETALLE++;
         this.cantidad = cantidad;
