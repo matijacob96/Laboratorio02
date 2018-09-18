@@ -39,6 +39,9 @@ public class verlistaproducto extends AppCompatActivity {
 
         edtProdCantidad = (EditText) findViewById(R.id.edtProdCantidad);
         btnProdAddPedido = findViewById(R.id.btnProdAddPedido);
+        cmbProductosCategoria = (Spinner) findViewById(R.id.cmbProductosCategoria);
+        lstProductos = (ListView) findViewById(R.id.lstProductos);
+
 
         if (bundle.getInt("NUEVO_PEDIDO") == 1){
             edtProdCantidad.setEnabled(true);
@@ -47,10 +50,6 @@ public class verlistaproducto extends AppCompatActivity {
             edtProdCantidad.setEnabled(false);
             btnProdAddPedido.setEnabled(false);
         }
-
-        cmbProductosCategoria = (Spinner) findViewById(R.id.cmbProductosCategoria);
-        lstProductos = (ListView) findViewById(R.id.lstProductos);
-
         repoAux = new ProductoRepository();
 
         adaptadorspin = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, repoAux.getCategorias());
