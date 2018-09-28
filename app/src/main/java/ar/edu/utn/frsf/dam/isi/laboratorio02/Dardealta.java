@@ -237,8 +237,11 @@ public class Dardealta extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    
-                                    Toast.makeText(Dardealta.this, "Información de pedidos ACTUALIZADA", Toast.LENGTH_LONG).show();
+                                    Intent intent = new Intent(getApplicationContext(),EstadoPedidoReceiver.class);
+                                    intent.putExtra("idPedido",unPedido.getId());
+                                    intent.setAction("ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_ACEPTADO");
+                                    getApplicationContext().sendBroadcast(intent);
+                                    //Toast.makeText(Dardealta.this, "Información de pedidos ACTUALIZADA", Toast.LENGTH_LONG).show();
                                 }
                             });
                         }
