@@ -8,6 +8,10 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoDetalle;
@@ -19,6 +23,7 @@ public class EstadoPedidoReceiver extends BroadcastReceiver {
         PedidoRepository repoaux;
         Pedido p;
         Double varaux = 0.0;
+        Date fechita;
 
         repoaux = new PedidoRepository();
 
@@ -28,13 +33,16 @@ public class EstadoPedidoReceiver extends BroadcastReceiver {
         for(PedidoDetalle d : p.getDetalle()){
             varaux += d.getCantidad()*d.getProducto().getPrecio();
         }
+        fechita = new Date(p.getFecha().getTime());
+        DateFormat formater = new SimpleDateFormat("HH:mm");
+        String fechitaformato = formater.format(fechita);
 
         NotificationCompat.Builder notification = new NotificationCompat.Builder(context, "CANAL01")
                 .setSmallIcon(R.drawable.ic_restaurant_black)
                 .setContentTitle("Tu pedido fue aceptado")
                 .setStyle(new NotificationCompat.InboxStyle()
                         .addLine("El costo será de: $"+varaux)
-                        .addLine("El horario de retiro/envio es: "+p.getFecha().getTime())); //TODO CAMBIAR EL HORARIO
+                        .addLine("El horario de retiro/envio es: "+fechitaformato));
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
