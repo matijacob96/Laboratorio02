@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
+
 public class MainActivity extends AppCompatActivity {
 
     private Button btnNuevoPedido;
@@ -41,6 +44,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         createNotificationChannel();
+
+        if(getIntent().hasExtra("ID_PEDIDO")){
+
+            Integer idPedido = Integer.valueOf(getIntent().getExtras().getString("ID_PEDIDO"));
+            PedidoRepository pedidoRepository = new PedidoRepository();
+            Pedido pedido = pedidoRepository.buscarPorId(idPedido);
+            if(!pedido.getEstado().equals(Pedido.Estado.LISTO)){
+                pedido.setEstado(Pedido.Estado.LISTO);
+                Intent intentListo = new Intent(MainActivity.this,EstadoPedidoReceiver.class);
+                intentListo.putExtra("idPedido", pedido.getId());
+                intentListo.setAction("ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_LISTO");
+                getApplicationContext().sendBroadcast(intentListo);
+            }
+        }
 
         btnNuevoPedido = (Button) findViewById(R.id.btnMainNuevoPedido);
         btnNuevoPedido.setOnClickListener(new View.OnClickListener() {
