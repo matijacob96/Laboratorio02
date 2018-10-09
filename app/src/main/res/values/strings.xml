@@ -1,3 +1,28 @@
 <resources>
     <string name="app_name">Laboratorio02</string>
+    <string name="main_titulo">Menu de opciones</string>
+    <string name="txcategoria">Seleccionar una catergoría</string>
+    <string name="cmbProductosCategoria"></string>
+    <string name="txListaProductos">Lista de productos</string>
+    <string name="txcantidad">Cantidad a pedir</string>
+    <string name="edtProdCantidad">0</string>
+    <string name="btnProdAddPedido">Agregar</string>
+    <string name="pedido_titulo">Datos del pedido</string>
+    <string name="pedido_lbl_correo">Correo Electrónico</string>
+    <string name="pedido_lbl_modo_entrega">Modo de entrega</string>
+    <string name="opt1">Retira en local</string>
+    <string name="opt2">Enviar a domicilio</string>
+    <string name="pedido_lbl_direccion">Dirección de envío</string>
+    <string name="pedido_lbl_hora_entrega">Hora Solicitada (hh:mm)</string>
+    <string name="pedido_btn_addproducto">Agregar Producto</string>
+    <string name="pedido_btn_quitarproducto">Quitar Producto</string>
+    <string name="pedido_lbl_totalpedido">Total del pedido: $ %1$s</string>
+    <string name="pedido_btn_hacerpedido">Hacer Pedido</string>
+    <string name="pedido_btn_volver">Volver</string>
+    <string name="btn_HistorialNuevo">Nuevo</string>
+    <string name="btn_HistorialMenu">Menu</string>
+    <string name="btn_fila_Cancelar">Cancelar</string>
+    <string name="btn_fila_VerDetalle">Ver Detalle</string>
+    <string name="btn_prepara_pedido">Preparar pedidos</string>
+
 </resources>
