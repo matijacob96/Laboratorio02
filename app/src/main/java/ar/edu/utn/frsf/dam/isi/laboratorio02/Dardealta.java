@@ -18,6 +18,7 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRepository;
@@ -220,6 +221,34 @@ public class Dardealta extends AppCompatActivity {
                     unPedido.setFecha(hora.getTime());
                     repositorioPedido.guardarPedido(unPedido);
 
+                    Runnable r = new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.currentThread().sleep(10000);
+                            } catch (InterruptedException e){
+                                e.printStackTrace();
+                            }
+                            List<Pedido> lista = repositorioPedido.getLista();
+                            for(Pedido p:lista){
+                                if(p.getEstado().equals(Pedido.Estado.REALIZADO))
+                                        p.setEstado(Pedido.Estado.ACEPTADO);
+                            }
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Intent intent = new Intent(getApplicationContext(),EstadoPedidoReceiver.class);
+                                    intent.putExtra("idPedido",unPedido.getId());
+                                    intent.setAction("ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_ACEPTADO");
+                                    getApplicationContext().sendBroadcast(intent);
+                                    //Toast.makeText(Dardealta.this, "Información de pedidos ACTUALIZADA", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                    };
+
+                    Thread unHilo = new Thread(r);
+                    unHilo.start();
                     setResult(RESULT_OK);
                     finish();
                 }

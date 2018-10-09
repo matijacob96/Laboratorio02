@@ -18,7 +18,22 @@
         </activity>
         <activity android:name=".verlistaproducto" />
         <activity android:name=".Dardealta" />
-        <activity android:name=".HistorialDePedidos"></activity>
+        <activity android:name=".HistorialDePedidos" />
+
+        <receiver
+            android:name=".EstadoPedidoReceiver"
+            android:enabled="true"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_ACEPTADO"/>
+                <action android:name="ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_CANCELADO"/>
+                <action android:name="ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_EN_PREPARACION"/>
+                <action android:name="ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_LISTO"/>
+            </intent-filter>
+        </receiver>
     </application>
+
+
 
 </manifest>
