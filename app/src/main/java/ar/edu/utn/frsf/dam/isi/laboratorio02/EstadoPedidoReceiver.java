@@ -60,10 +60,26 @@ public class EstadoPedidoReceiver extends BroadcastReceiver {
 
 // notificationId is a unique int for each notification that you must define
             notificationManager.notify(p.getId(), notification1);
-        } else {
+        } else if(action == "ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_EN_PREPARACION") {
             NotificationCompat.Builder notification = new NotificationCompat.Builder(context, "CANAL01")
                     .setSmallIcon(R.drawable.ic_restaurant_black)
                     .setContentTitle("Tu pedido está en preparación")
+                    .setStyle(new NotificationCompat.InboxStyle()
+                            .addLine("El costo será de: $" + varaux)
+                            .addLine("El horario de retiro/envio es: " + fechitaformato));
+
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+            Notification notification1 = notification.build();
+            notification1.flags |= Notification.FLAG_AUTO_CANCEL;
+            notification1.contentIntent = intent2;
+
+// notificationId is a unique int for each notification that you must define
+            notificationManager.notify(p.getId(), notification1);
+        } else if(action == "ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_LISTO") {
+
+            NotificationCompat.Builder notification = new NotificationCompat.Builder(context, "CANAL01")
+                    .setSmallIcon(R.drawable.ic_restaurant_black)
+                    .setContentTitle("Tu pedido está listo")
                     .setStyle(new NotificationCompat.InboxStyle()
                             .addLine("El costo será de: $" + varaux)
                             .addLine("El horario de retiro/envio es: " + fechitaformato));
