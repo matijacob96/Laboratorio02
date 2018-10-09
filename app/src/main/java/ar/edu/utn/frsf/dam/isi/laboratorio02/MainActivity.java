@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
             Integer idPedido = Integer.valueOf(getIntent().getExtras().getString("ID_PEDIDO"));
             PedidoRepository pedidoRepository = new PedidoRepository();
             Pedido pedido = pedidoRepository.buscarPorId(idPedido);
-            System.out.println("Esto es de prueba "+pedido.getId());
             if(!pedido.getEstado().equals(Pedido.Estado.LISTO)){
                 pedido.setEstado(Pedido.Estado.LISTO);
                 Intent intentListo = new Intent(MainActivity.this,EstadoPedidoReceiver.class);
