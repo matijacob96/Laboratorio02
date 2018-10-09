@@ -78,7 +78,8 @@ public class MainActivity extends AppCompatActivity {
         btnPrepararPedido.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(getApplicationContext(), PrepararPedidoService.class);
+                startService(intent);
             }
         });
     }
