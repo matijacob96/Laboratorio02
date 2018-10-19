@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnHistorial;
     private Button btnListaProductos;
     private Button btnPrepararPedido;
+    private Button btnPref;
 
     private final int REQUEST_NUEVOPEDIDO = 0;
 
@@ -97,6 +98,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), PrepararPedidoService.class);
                 startService(intent);
+            }
+        });
+
+        btnPref = findViewById(R.id.btnPref);
+        btnPref.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ConfiguracionActivity.class);
+                startActivity(intent);
             }
         });
     }

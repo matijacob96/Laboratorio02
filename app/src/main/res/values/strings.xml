@@ -24,5 +24,7 @@
     <string name="btn_fila_Cancelar">Cancelar</string>
     <string name="btn_fila_VerDetalle">Ver Detalle</string>
     <string name="btn_prepara_pedido">Preparar pedidos</string>
-
+    <string name="pref_retirar">Retirar Por Defecto</string>
+    <string name="pref_correo">Correo electrónico</string>
+    <string name="btn_pref">Preferencias</string>
 </resources>
