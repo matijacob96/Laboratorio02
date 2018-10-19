@@ -1,6 +1,8 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -46,6 +48,8 @@ public class Dardealta extends AppCompatActivity {
     Button btnVolver;
     Button btnQuitarProducto;
     PedidoDetalle itemSeleccionado;
+    RadioButton rbRetira;
+    RadioButton rbEnviar;
 
     private final int REQUEST_NUEVOITEM = 0;
 
@@ -67,7 +71,9 @@ public class Dardealta extends AppCompatActivity {
         edtPedidoHoraEntrega = findViewById(R.id.edtPedidoHoraEntrega);
         btnVolver = findViewById(R.id.btnDAVolver);
         btnQuitarProducto = findViewById(R.id.btnQuitarProducto);
-
+        rbRetira = findViewById(R.id.optPedidoRetira);
+        rbEnviar = findViewById(R.id.optPedidoEnviar);
+        SharedPreferences preferencias = PreferenceManager.getDefaultSharedPreferences(this);
 
 
         Intent i1= getIntent();
@@ -122,12 +128,23 @@ public class Dardealta extends AppCompatActivity {
             }
 
         }else {
+
             unPedido = new Pedido();
+            // TODO aca hay que hacer algo
+
+            edtCorreo.setText( preferencias.getString("key_correo",null));
         }
 
 
         edtPedidoDireccion.setEnabled(false);
 
+        if (preferencias.getBoolean("key_retirar",false)==true){
+            rbRetira.setChecked(true);
+            rbEnviar.setChecked(false);
+        } else {
+            rbEnviar.setChecked(true);
+            rbRetira.setChecked(false);
+        }
 
 
         optPedidoModoEntrega.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
