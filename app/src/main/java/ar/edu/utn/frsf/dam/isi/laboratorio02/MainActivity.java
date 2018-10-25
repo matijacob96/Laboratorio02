@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnPrepararPedido;
     private Button btnPref;
     private Button btnCategoria;
+    private Button btnProdChange;
 
     private final int REQUEST_NUEVOPEDIDO = 0;
 
@@ -116,6 +117,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(),CategoriaActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btnProdChange = findViewById(R.id.btnProdChange);
+        btnProdChange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(getApplicationContext(),GestionProductoActivity.class);
                 startActivity(intent);
             }
         });
