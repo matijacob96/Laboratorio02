@@ -52,31 +52,45 @@ public class verlistaproducto extends AppCompatActivity {
         }
         repoAux = new ProductoRepository();
 
-        adaptadorspin = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, repoAux.getCategorias());
-        cmbProductosCategoria.setAdapter(adaptadorspin);
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                CategoriaRest catRest = new CategoriaRest();
+                final Categoria[] cats = catRest.listarTodas().toArray(new Categoria[0]);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adaptadorspin = new ArrayAdapter<Categoria>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, cats);
+                        cmbProductosCategoria.setAdapter(adaptadorspin);
+                        cmbProductosCategoria.setSelection(0);
+
+                        adaptadorlist = new ArrayAdapter<Producto>(getApplicationContext(),android.R.layout.simple_list_item_single_choice, repoAux.buscarPorCategoria((Categoria) cmbProductosCategoria.getItemAtPosition(0)));
+                        lstProductos.setAdapter(adaptadorlist);
+
+                        cmbProductosCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                adaptadorlist.clear();
+                                adaptadorlist.addAll(repoAux.buscarPorCategoria((Categoria)parent.getItemAtPosition(position))
+                                );
+                                adaptadorlist.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {}
+                        });
 
 
-        Categoria cat = repoAux.getCategorias().get(0);
-        adaptadorlist = new ArrayAdapter<Producto>(getApplicationContext(),android.R.layout.simple_list_item_single_choice, repoAux.buscarPorCategoria(cat));
-        lstProductos.setAdapter(adaptadorlist);
+                    }
+                });
+            }
+        };
+        Thread hiloCargarComo = new Thread(r);
+        hiloCargarComo.start();
+
+
         lstProductos.setSelection(0);
-
-
-
-        cmbProductosCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Categoria cat = repoAux.getCategorias().get(position);
-                adaptadorlist = new ArrayAdapter<Producto>(getApplicationContext(),android.R.layout.simple_list_item_single_choice, repoAux.buscarPorCategoria(cat));
-                lstProductos.setAdapter(adaptadorlist);
-                lstProductos.setItemChecked(0, true);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         lstProductos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
