@@ -101,7 +101,6 @@ public class CategoriaRest {
         List<Categoria> resultado = null;
         try {
             resultado = new ArrayList<>();
-
             InputStream in = null;
 // GESTIONAR LA CONEXION
             URL url = new URL("http://10.0.2.2:5000/categorias/");
@@ -137,19 +136,23 @@ public class CategoriaRest {
                 // iterar todas las entradas del arreglo
                 for (int i = 0; i < listaCategorias.length(); i++) {
                     Categoria cat = new Categoria();
-                    // analizar cada element del JSONArray
-                    //armar una instancia de categoría y agregarla a la lista
-                    cat.setId(listaCategorias.optJSONObject(i).getInt("id"));
-                    cat.setNombre(listaCategorias.optJSONObject(i).getString("nombre"));
+
+                    JSONObject object = listaCategorias.getJSONObject(i);
+
+                    Integer id = object.getInt("id");
+                    String name = object.getString("nombre");
+
+                    cat.setId(id);
+                    cat.setNombre(name);
+
                     resultado.add(cat);
                 }
             } else {
-                // lanzar excepcion o mostrar mensaje de error
-                // que no se pudo ejecutar la operacion
+                System.out.println("ERROR: no se pudo ejecutar la operación de recuperar las categorías");
 
-                throw new IllegalStateException():
+                throw new IllegalStateException();
             }
-//NO OLVIDAR CERRAR inputStream y conexion
+
             if (in != null) in.close();
 
             if (urlConnection != null) urlConnection.disconnect();
@@ -161,7 +164,6 @@ public class CategoriaRest {
             e2.printStackTrace();
         }
 
-        //retornar resultado
         return resultado;
     }
 
