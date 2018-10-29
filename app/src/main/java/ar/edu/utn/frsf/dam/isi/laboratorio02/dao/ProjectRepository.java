@@ -6,16 +6,19 @@ import android.content.Context;
 import java.util.List;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
 
 public class ProjectRepository {
     private static ProjectRepository _REPO = null;
     private static CategoriaDao categoriaDao;
+    private static ProductoDao productoDao;
 
     private ProjectRepository(Context ctx) {
         AppDatabase db = Room.databaseBuilder(ctx,
                 AppDatabase.class, "dam-pry-2018").fallbackToDestructiveMigration()
                 .build();
         categoriaDao = db.categoriaDao();
+        productoDao = db.productoDao();
     }
 
     public static ProjectRepository getInstance(Context ctx) {
@@ -41,5 +44,27 @@ public class ProjectRepository {
 
     public static void update(Categoria categoria) {
         categoriaDao.update(categoria);
+    }
+
+    public static List<Producto> getAllProducto(){return productoDao.getAll();}
+
+    public static List<Producto> loadAllByIdsProducto(int[] productoIds){return productoDao.loadAllByIds(productoIds);}
+    public static void insertAllProducto(Producto... productos) {
+        productoDao.insertAll(productos);
+    }
+    public static void insertProducto(Producto producto) {
+        productoDao.insert(producto);
+    }
+
+    public static void deleteProducto(Producto producto) {
+        productoDao.delete(producto);
+    }
+
+    public static void updateProducto(Producto producto) {
+        productoDao.update(producto);
+    }
+
+    public static Producto loadById(int prodId) {
+        return productoDao.loadById(prodId);
     }
 }

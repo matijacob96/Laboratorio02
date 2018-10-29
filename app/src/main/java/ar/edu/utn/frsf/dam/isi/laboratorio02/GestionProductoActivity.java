@@ -2,6 +2,7 @@ package ar.edu.utn.frsf.dam.isi.laboratorio02;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -11,7 +12,10 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import java.util.List;
+
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRetrofit;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProjectRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
 import retrofit2.Call;
@@ -56,8 +60,12 @@ public class GestionProductoActivity extends AppCompatActivity {
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                CategoriaRest catRest = new CategoriaRest();
-                final Categoria[] cats = catRest.listarTodas().toArray(new Categoria[0]);
+                /*CategoriaRest catRest = new CategoriaRest();
+                final Categoria[] cats = catRest.listarTodas().toArray(new Categoria[0]);*/
+
+                ProjectRepository.getInstance(getApplicationContext()); //Crea la DB
+
+                final List<Categoria> cats = ProjectRepository.getAll();
 
                 runOnUiThread(new Runnable() {
                                   @Override
@@ -85,7 +93,46 @@ public class GestionProductoActivity extends AppCompatActivity {
         btnBorrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ProductoRetrofit clienteRest =
+                Thread r = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        try {
+                            ProjectRepository.getInstance(getApplicationContext());
+                            Producto aBorrar = ProjectRepository.loadById(Integer.parseInt(idProductoBuscar.getText().toString()));
+
+                            ProjectRepository.deleteProducto(aBorrar);
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    nombreProducto.setText(null);
+                                    precioProducto.setText(null);
+                                    descProducto.setText(null);
+                                    comboCategorias.setSelection(-1);
+                                    idProductoBuscar.setText(null);
+                                }
+                            });
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(GestionProductoActivity.this, "El producto ha sido borrado con éxito", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        } catch (Exception e) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(GestionProductoActivity.this,"Ha ocurrido un error", Toast.LENGTH_LONG).show();
+                                }
+                            });
+
+                        }
+                    }
+                });
+                r.start();
+                /*ProductoRetrofit clienteRest =
                         RestClient.getInstance()
                                 .getRetrofit()
                                 .create(ProductoRetrofit.class);
@@ -107,14 +154,45 @@ public class GestionProductoActivity extends AppCompatActivity {
                         Toast.makeText(GestionProductoActivity.this,"Ha ocurrido un error", Toast.LENGTH_LONG).show();
                         return ;
                     }
-                });
+                });*/
             }
         });
 
         btnBuscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ProductoRetrofit clienteRest =
+                Thread r = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        try {
+                            ProjectRepository.getInstance(getApplicationContext());
+                            final Producto buscado = ProjectRepository.loadById(Integer.parseInt(idProductoBuscar.getText().toString()));
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    nombreProducto.setText(buscado.getNombre());
+                                    descProducto.setText(buscado.getDescripcion());
+                                    precioProducto.setText(String.valueOf(buscado.getPrecio()));
+                                    comboCategorias.setSelection(buscado.getCategoria().getId()-1);
+                                }
+                            });
+
+                        } catch (Exception e) {
+                            //Log.d("Exception", e.getLocalizedMessage());
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(GestionProductoActivity.this,"Ha ocurrido un error", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                    }
+                });
+                r.start();
+
+                /*ProductoRetrofit clienteRest =
                         RestClient.getInstance()
                                 .getRetrofit()
                                 .create(ProductoRetrofit.class);
@@ -133,13 +211,69 @@ public class GestionProductoActivity extends AppCompatActivity {
                         Toast.makeText(GestionProductoActivity.this,"Ha ocurrido un error", Toast.LENGTH_LONG).show();
                         return ;
                     }
-                });
+                });*/
             }
         });
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Producto p = new Producto(nombreProducto.getText().toString(), descProducto.getText().toString(), Double.parseDouble(precioProducto.getText().toString()), (Categoria) comboCategorias.getSelectedItem());
+                Thread r = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        try {
+                            ProjectRepository.getInstance(getApplicationContext());
+
+                            if (!flagActualizacion) {
+                                Producto p = new Producto(nombreProducto.getText().toString(), descProducto.getText().toString(), Double.parseDouble(precioProducto.getText().toString()), (Categoria) comboCategorias.getSelectedItem());
+
+                                ProjectRepository.insertProducto(p);
+
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(GestionProductoActivity.this,"El producto ha sido creado con éxito", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+
+                            } else {
+
+
+                                Producto aActualizar = ProjectRepository.loadById(Integer.parseInt(idProductoBuscar.getText().toString()));
+
+                                aActualizar.setNombre(nombreProducto.getText().toString());
+                                aActualizar.setDescripcion(descProducto.getText().toString());
+                                aActualizar.setPrecio(Double.parseDouble(precioProducto.getText().toString()));
+                                aActualizar.setCategoria((Categoria) comboCategorias.getSelectedItem());
+
+                                ProjectRepository.updateProducto(aActualizar);
+
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(GestionProductoActivity.this,"El producto ha sido actualizado", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+
+
+                        } catch (Exception e) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(GestionProductoActivity.this,"Ha ocurrido un error", Toast.LENGTH_LONG).show();
+                                }
+                            });
+
+
+                        }
+                    }
+                });
+                r.start();
+
+
+
+                /*Producto p = new Producto(nombreProducto.getText().toString(), descProducto.getText().toString(), Double.parseDouble(precioProducto.getText().toString()), (Categoria) comboCategorias.getSelectedItem());
 
                 ProductoRetrofit clienteRest =
                         RestClient.getInstance()
@@ -178,7 +312,7 @@ public class GestionProductoActivity extends AppCompatActivity {
                             return ;
                         }
                     });
-                }
+                }*/
             }
         });
     }
