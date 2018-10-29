@@ -30,6 +30,7 @@ public class verlistaproducto extends AppCompatActivity {
     EditText edtProdCantidad;
     Button btnProdAddPedido;
     Producto itemSeleccionado;
+    List<Producto> prodsPorCat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,24 +70,59 @@ public class verlistaproducto extends AppCompatActivity {
                         adaptadorspin = new ArrayAdapter<Categoria>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, cats);
                         cmbProductosCategoria.setAdapter(adaptadorspin);
                         cmbProductosCategoria.setSelection(0);
-
-                        adaptadorlist = new ArrayAdapter<Producto>(getApplicationContext(),android.R.layout.simple_list_item_single_choice, repoAux.buscarPorCategoria((Categoria) cmbProductosCategoria.getItemAtPosition(0)));
-                        lstProductos.setAdapter(adaptadorlist);
-
-                        cmbProductosCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        Thread t = new Thread(new Runnable() {
                             @Override
-                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                adaptadorlist.clear();
-                                adaptadorlist.addAll(repoAux.buscarPorCategoria((Categoria)parent.getItemAtPosition(position))
-                                );
-                                adaptadorlist.notifyDataSetChanged();
+                            public void run() {
+                                Log.d("Cat", String.valueOf(cats.get(0)));
+                                prodsPorCat = ProjectRepository.buscarPorCategoria(cats.get(0));
+
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        adaptadorlist = new ArrayAdapter<Producto>(getApplicationContext(),android.R.layout.simple_list_item_single_choice, prodsPorCat);
+                                        //adaptadorlist = new ArrayAdapter<Producto>(getApplicationContext(),android.R.layout.simple_list_item_single_choice, repoAux.buscarPorCategoria((Categoria) cmbProductosCategoria.getItemAtPosition(0)));
+                                        Log.d("Cat", String.valueOf(prodsPorCat));
+                                        lstProductos.setAdapter(adaptadorlist);
+
+                                        cmbProductosCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                            @Override
+                                            public void onItemSelected( AdapterView<?> parent, View view,  int position, long id) {
+                                                adaptadorlist.clear();
+                                                final Categoria catPos = (Categoria)parent.getItemAtPosition(position);
+
+                                                Thread t = new Thread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        final List<Producto> prodsPorCat2 = ProjectRepository.buscarPorCategoria(catPos);
+
+
+                                                        runOnUiThread(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                adaptadorlist.addAll(prodsPorCat2);
+                                                                //adaptadorlist.addAll(repoAux.buscarPorCategoria((Categoria)parent.getItemAtPosition(position)));
+                                                                adaptadorlist.notifyDataSetChanged();
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                                t.start();
+                                            }
+
+                                            @Override
+                                            public void onNothingSelected(AdapterView<?> parent) {}
+                                        });
+
+
+
+
+                                    }
+                                });
+
+
                             }
-
-                            @Override
-                            public void onNothingSelected(AdapterView<?> parent) {}
                         });
-
-
+                        t.start();
                     }
                 });
             }

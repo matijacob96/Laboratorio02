@@ -32,4 +32,7 @@ public interface ProductoDao {
 
     @Insert
     void insert(Producto producto);
+
+    @Query("SELECT * FROM producto WHERE cat_id = :idCat")
+    List<Producto> buscarPorCategoria(int idCat);
 }

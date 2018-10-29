@@ -14,22 +14,38 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProjectRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoDetalle;
 
 public class EstadoPedidoReceiver extends BroadcastReceiver {
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, final Intent intent) {
+
+        //repoaux = new PedidoRepository();
+
+        //p = repoaux.buscarPorId(intent.getExtras().getInt("idPedido"));
+
+
+
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                finishOnReceive(context, intent);
+            }
+        });
+    }
+
+    private void finishOnReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        PedidoRepository repoaux;
+        //PedidoRepository repoaux;
         Pedido p;
         Double varaux = 0.0;
         Date fechita;
 
-        repoaux = new PedidoRepository();
-
-        p = repoaux.buscarPorId(intent.getExtras().getInt("idPedido"));
+        ProjectRepository.getInstance(context);
+        p = ProjectRepository.loadByIdPedido(intent.getExtras().getInt("idPedido"));
         //Toast.makeText(context,"Pedido para "+p.getMailContacto()+" ha cambiado al estado "+p.getEstado(),Toast.LENGTH_LONG).show();
 
         for (PedidoDetalle d : p.getDetalle()) {

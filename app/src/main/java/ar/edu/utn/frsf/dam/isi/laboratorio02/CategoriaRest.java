@@ -28,7 +28,9 @@ import java.util.List;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
 
 public class CategoriaRest {
+    /*
     // realiza el POST de una categoría al servidor REST
+
     public void crearCategoria(Categoria c) throws IllegalStateException {
 
         HttpURLConnection urlConnection = null;
@@ -85,9 +87,9 @@ public class CategoriaRest {
         } catch (JSONException e2) {
             e2.printStackTrace();
         }
-        /*catch (IllegalStateException e3) {
-            e3.printStackTrace();
-        }*/
+        //catch (IllegalStateException e3) {
+        //    e3.printStackTrace();
+        //}
 // caputurar todas las excepciones y en el bloque finally
 // cerrar todos los streams y HTTPUrlCOnnection
         finally {
@@ -128,9 +130,9 @@ public class CategoriaRest {
 
 
 
-            /*Gson gson = new Gson();
-            Type type = new TypeToken<List<Categoria>>(){}.getType();
-            resultado = gson.fromJson(listaCategorias.toString(), type);*/
+            //Gson gson = new Gson();
+            //Type type = new TypeToken<List<Categoria>>(){}.getType();
+            //resultado = gson.fromJson(listaCategorias.toString(), type);
 
 
                 // iterar todas las entradas del arreglo
@@ -166,5 +168,5 @@ public class CategoriaRest {
 
         return resultado;
     }
-
+    */
 }

@@ -24,6 +24,7 @@ import java.util.List;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProjectRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoDetalle;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
@@ -105,7 +106,9 @@ public class Dardealta extends AppCompatActivity {
             }
         }
         if(idPedido>0){
-            unPedido = repositorioPedido.buscarPorId(idPedido);
+            ProjectRepository.getInstance(this);
+            //unPedido = repositorioPedido.buscarPorId(idPedido);
+            unPedido = ProjectRepository.loadByIdPedido(idPedido);
             edtCorreo.setText(unPedido.getMailContacto());
             edtPedidoDireccion.setText(unPedido.getDireccionEnvio());
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
@@ -193,8 +196,11 @@ public class Dardealta extends AppCompatActivity {
         btnQuitarProducto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                varaux -= itemSeleccionado.getCantidad()*itemSeleccionado.getProducto().getPrecio();
                 unPedido.quitarDetalle(itemSeleccionado);
                 adaptadorlist.notifyDataSetChanged();
+                String str = getResources().getString(R.string.pedido_lbl_totalpedido, varaux.toString());
+                lblTotalPedido.setText(str);
             }
         });
 
@@ -236,17 +242,19 @@ public class Dardealta extends AppCompatActivity {
                     hora.set(Calendar.MINUTE,valorMinuto);
                     hora.set(Calendar.SECOND,Integer.valueOf(0));
                     unPedido.setFecha(hora.getTime());
-                    repositorioPedido.guardarPedido(unPedido);
+                    //repositorioPedido.guardarPedido(unPedido);
 
                     Runnable r = new Runnable() {
                         @Override
                         public void run() {
+                            ProjectRepository.getInstance(getApplicationContext());
+                            ProjectRepository.insertPedido(unPedido);
                             try {
                                 Thread.currentThread().sleep(10000);
                             } catch (InterruptedException e){
                                 e.printStackTrace();
                             }
-                            List<Pedido> lista = repositorioPedido.getLista();
+                            List<Pedido> lista = ProjectRepository.getAllPedido();
                             for(Pedido p:lista){
                                 if(p.getEstado().equals(Pedido.Estado.REALIZADO))
                                         p.setEstado(Pedido.Estado.ACEPTADO);
@@ -287,20 +295,37 @@ public class Dardealta extends AppCompatActivity {
 
         if (requestCode == REQUEST_NUEVOITEM){
             if(resultCode == RESULT_OK){
-                Bundle bundle = data.getExtras();
+                final Bundle bundle = data.getExtras();
 
                 detalleaux = new PedidoDetalle();
-                detalleaux.setProducto(repositorioProducto.buscarPorId(bundle.getInt("idProducto")));
-                detalleaux.setCantidad(bundle.getInt("cantidad"));
+                //detalleaux.setProducto(repositorioProducto.buscarPorId(bundle.getInt("idProducto")));
 
-                detalleaux.setPedido(unPedido);
+                ProjectRepository.getInstance(getApplicationContext());
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        detalleaux.setProducto(ProjectRepository.loadById(bundle.getInt("idProducto")));
+                        detalleaux.setCantidad(bundle.getInt("cantidad"));
+
+                        detalleaux.setPedido(unPedido);
 
 
-                String str;
-                varaux += detalleaux.getCantidad()*detalleaux.getProducto().getPrecio();
-                str = getResources().getString(R.string.pedido_lbl_totalpedido, varaux.toString());
-                lblTotalPedido.setText(str);
-                adaptadorlist.notifyDataSetChanged();
+                        String str;
+                        varaux += detalleaux.getCantidad()*detalleaux.getProducto().getPrecio();
+                        str = getResources().getString(R.string.pedido_lbl_totalpedido, varaux.toString());
+                        lblTotalPedido.setText(str);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                adaptadorlist.notifyDataSetChanged();
+                            }
+                        });
+
+
+                    }
+                });
+                t.start();
+
             }
         }
     }

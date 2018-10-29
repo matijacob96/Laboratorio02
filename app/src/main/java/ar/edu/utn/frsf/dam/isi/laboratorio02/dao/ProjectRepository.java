@@ -6,12 +6,15 @@ import android.content.Context;
 import java.util.List;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
 
 public class ProjectRepository {
     private static ProjectRepository _REPO = null;
     private static CategoriaDao categoriaDao;
     private static ProductoDao productoDao;
+    private static PedidoDao pedidoDao;
+    private static PedidoDetalleDao pedidoDetalleDao;
 
     private ProjectRepository(Context ctx) {
         AppDatabase db = Room.databaseBuilder(ctx,
@@ -19,6 +22,9 @@ public class ProjectRepository {
                 .build();
         categoriaDao = db.categoriaDao();
         productoDao = db.productoDao();
+        pedidoDao = db.pedidoDao();
+        pedidoDetalleDao = db.pedidoDetalleDao();
+
     }
 
     public static ProjectRepository getInstance(Context ctx) {
@@ -66,5 +72,24 @@ public class ProjectRepository {
 
     public static Producto loadById(int prodId) {
         return productoDao.loadById(prodId);
+    }
+
+    public static void insertPedido(Pedido unPedido) {
+        pedidoDao.insertAll(unPedido);
+    }
+
+    public static List<Pedido> getAllPedido() {
+        return pedidoDao.getAll();
+    }
+
+    public static Pedido loadByIdPedido(Integer pedidoId){
+        int[] pid = {pedidoId};
+
+        return pedidoDao.loadAllByIds(pid).get(0);
+    }
+
+
+    public static List<Producto>  buscarPorCategoria(Categoria cat) {
+        return productoDao.buscarPorCategoria(cat.getId());
     }
 }

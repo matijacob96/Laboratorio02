@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProjectRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 
 public class MainActivity extends AppCompatActivity {
@@ -51,8 +52,10 @@ public class MainActivity extends AppCompatActivity {
         if(getIntent().hasExtra("ID_PEDIDO")){
 
             Integer idPedido = Integer.valueOf(getIntent().getExtras().getString("ID_PEDIDO"));
-            PedidoRepository pedidoRepository = new PedidoRepository();
-            Pedido pedido = pedidoRepository.buscarPorId(idPedido);
+            //PedidoRepository pedidoRepository = new PedidoRepository();
+            ProjectRepository.getInstance(this);
+            Pedido pedido = ProjectRepository.loadByIdPedido(idPedido);
+            //Pedido pedido = pedidoRepository.buscarPorId(idPedido);
             if(!pedido.getEstado().equals(Pedido.Estado.LISTO)){
                 pedido.setEstado(Pedido.Estado.LISTO);
                 Intent intentListo = new Intent(MainActivity.this,EstadoPedidoReceiver.class);

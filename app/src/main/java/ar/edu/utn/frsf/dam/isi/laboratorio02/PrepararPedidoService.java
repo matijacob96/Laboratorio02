@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import java.util.List;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProjectRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 
 public class PrepararPedidoService extends IntentService {
@@ -25,12 +26,15 @@ public class PrepararPedidoService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent inten) {
         try {
-            Thread.currentThread().sleep(20000);
+            Thread.currentThread().sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        PedidoRepository repoaux = new PedidoRepository();
-        List<Pedido> pedidos = repoaux.getLista();
+        //PedidoRepository repoaux = new PedidoRepository();
+        //List<Pedido> pedidos = repoaux.getLista();
+
+        ProjectRepository.getInstance(this);
+        List<Pedido> pedidos = ProjectRepository.getAllPedido();
 
         for(Pedido p : pedidos){
             if(p.getEstado() == Pedido.Estado.ACEPTADO) {

@@ -7,7 +7,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
+import java.util.List;
+
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProjectRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 
 public class HistorialDePedidos extends AppCompatActivity {
 
@@ -28,10 +32,24 @@ public class HistorialDePedidos extends AppCompatActivity {
         btnMenu = findViewById(R.id.btnHistorialMenu);
         btnNuevo = findViewById(R.id.btnHistorialNuevo);
 
-        repoPedidos = new PedidoRepository();
-        pedidoaux = new PedidoAdapter(this, repoPedidos.getLista());
-        pedidoshechos.setAdapter(pedidoaux);
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //repoPedidos = new PedidoRepository();
+                //pedidoaux = new PedidoAdapter(this, repoPedidos.getLista());
+                ProjectRepository.getInstance(getApplicationContext());
+                final List<Pedido> pedidos = ProjectRepository.getAllPedido();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        pedidoaux = new PedidoAdapter(getApplicationContext(), pedidos);
+                        pedidoshechos.setAdapter(pedidoaux);
+                    }
+                });
 
+            }
+        });
+        t.start();
 
         btnMenu.setOnClickListener(new View.OnClickListener() {
             @Override

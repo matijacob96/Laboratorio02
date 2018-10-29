@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProjectRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoDetalle;
 
@@ -29,8 +30,10 @@ public class RestoMessagingService extends FirebaseMessagingService {
 
             Integer idPedido = Integer.parseInt(remoteMessage.getData().get("ID_PEDIDO"));
 
-            PedidoRepository pedidoRepository = new PedidoRepository();
-            Pedido pedido = pedidoRepository.buscarPorId(idPedido);
+            //PedidoRepository pedidoRepository = new PedidoRepository();
+            //Pedido pedido = pedidoRepository.buscarPorId(idPedido);
+            ProjectRepository.getInstance(this);
+            Pedido pedido = ProjectRepository.loadByIdPedido(idPedido);
             System.out.println("A ver que onda "+pedido.getId() +"El estado es "+pedido.getEstado());
             pedido.setEstado(Pedido.Estado.LISTO);
 
