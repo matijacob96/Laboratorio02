@@ -57,7 +57,7 @@ public class verlistaproducto extends AppCompatActivity {
             @Override
             public void run() {
                 //CategoriaRest catRest = new CategoriaRest();
-                //final Categoria[] cats = catRest.listarTodas().toArray(new Categoria[0]);
+                // final Categoria[] cats = catRest.listarTodas().toArray(new Categoria[0]);
 
                 ProjectRepository.getInstance(getApplicationContext()); //Crea la DB
 
