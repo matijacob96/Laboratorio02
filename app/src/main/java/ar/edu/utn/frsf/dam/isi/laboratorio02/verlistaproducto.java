@@ -16,6 +16,7 @@ import android.widget.Spinner;
 import java.util.List;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProjectRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
 
@@ -55,8 +56,12 @@ public class verlistaproducto extends AppCompatActivity {
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                CategoriaRest catRest = new CategoriaRest();
-                final Categoria[] cats = catRest.listarTodas().toArray(new Categoria[0]);
+                //CategoriaRest catRest = new CategoriaRest();
+                //final Categoria[] cats = catRest.listarTodas().toArray(new Categoria[0]);
+
+                ProjectRepository.getInstance(getApplicationContext()); //Crea la DB
+
+                final List<Categoria> cats = ProjectRepository.getAll();
 
                 runOnUiThread(new Runnable() {
                     @Override

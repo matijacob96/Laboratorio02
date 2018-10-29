@@ -1,12 +1,19 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02.modelo;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+
 import java.util.Objects;
 
+@Entity
 public class Categoria {
 
+    @PrimaryKey(autoGenerate = true)
     private Integer id;
     private String nombre;
 
+    @Ignore
     public Categoria(Integer id, String nombre) {
         this.id = id;
         this.nombre = nombre;
@@ -16,6 +23,7 @@ public class Categoria {
         this.nombre = nombre;
     }
 
+    @Ignore
     public Categoria() {
     }
 
