@@ -7,6 +7,7 @@ import java.util.List;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoDetalle;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
 
 public class ProjectRepository {
@@ -75,17 +76,24 @@ public class ProjectRepository {
     }
 
     public static void insertPedido(Pedido unPedido) {
+        pedidoDetalleDao.insertAll(unPedido.getDetalle());
         pedidoDao.insertAll(unPedido);
     }
 
     public static List<Pedido> getAllPedido() {
-        return pedidoDao.getAll();
+        List<Pedido> pedidos = pedidoDao.getAll();
+        for (Pedido p : pedidos) {
+            p.setDetalle(pedidoDetalleDao.loadAllByPedidoId(p.getId()));
+        }
+        return pedidos;
     }
 
     public static Pedido loadByIdPedido(Integer pedidoId){
         int[] pid = {pedidoId};
 
-        return pedidoDao.loadAllByIds(pid).get(0);
+        Pedido p =pedidoDao.loadAllByIds(pid).get(0);
+        p.setDetalle(pedidoDetalleDao.loadAllByPedidoId(p.getId()));
+        return p;
     }
 
 

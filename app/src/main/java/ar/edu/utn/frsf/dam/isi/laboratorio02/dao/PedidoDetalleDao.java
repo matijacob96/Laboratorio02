@@ -18,8 +18,11 @@ public interface PedidoDetalleDao {
     @Query("SELECT * FROM pedidodetalle WHERE id IN (:pedidodetalleIds)")
     List<PedidoDetalle> loadAllByIds(int[] pedidodetalleIds);
 
+    @Query("SELECT * FROM pedidodetalle WHERE ped_id IN (:pedidoId)")
+    List<PedidoDetalle> loadAllByPedidoId(int pedidoId);
+
     @Insert
-    void insertAll(PedidoDetalle... pedido);
+    void insertAll(List<PedidoDetalle> pedido);
 
     @Delete
     void delete(PedidoDetalle pedido);
