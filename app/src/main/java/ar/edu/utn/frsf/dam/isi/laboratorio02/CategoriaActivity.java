@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProjectRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
 
 public class CategoriaActivity extends AppCompatActivity {
@@ -28,10 +29,13 @@ public class CategoriaActivity extends AppCompatActivity {
                 Thread thread = new Thread() {
                     @Override
                     public void run(){
-                        CategoriaRest crest = new CategoriaRest();
+                        /*CategoriaRest crest = new CategoriaRest();*/
+                        ProjectRepository.getInstance(getApplicationContext()); //Crea la DB
+
                         final Categoria c = new Categoria(textoCat.getText().toString());
                         try {
-                            crest.crearCategoria(c);
+                            /*crest.crearCategoria(c);*/
+                            ProjectRepository.insertAll(c);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -40,7 +44,7 @@ public class CategoriaActivity extends AppCompatActivity {
                             });
 
                             textoCat.setText("");
-                        } catch (IllegalStateException e) {
+                        } catch (Exception e) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
